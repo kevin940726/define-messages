@@ -1,11 +1,7 @@
 const path = require("path");
 const fs = require("fs");
 const { name } = require("../package.json");
-
-const DEFAULT_MODULE_SOURCE_NAME = `${name}/babel/${path.basename(
-  __filename,
-  ".js"
-)}`;
+const { getDefineMessagesCall } = require("./utils");
 
 const MESSAGES_KEY = Symbol("MESSAGES");
 
@@ -14,19 +10,9 @@ const messagesVisitors = {
     const { file } = state;
     const properties = path.get("properties");
 
-    const idPath = properties.find(
-      propertyPath => propertyPath.node.key.name === "id"
-    );
-    const defaultMessagePath = properties.find(
-      propertyPath => propertyPath.node.key.name === "defaultMessage"
-    );
+    const { value: message } = path.evaluate();
 
-    if (idPath && defaultMessagePath) {
-      const message = {
-        id: idPath.node.value.value,
-        defaultMessage: defaultMessagePath.node.value.value
-      };
-
+    if (message && ["id", "defaultMessage"].includes(Object.keys(message))) {
       file.get(MESSAGES_KEY).set(message.id, message);
     }
   }
@@ -40,11 +26,9 @@ module.exports = ({ types: t }) => ({
   },
   visitor: {
     CallExpression(path, state) {
-      const { moduleSourceName = DEFAULT_MODULE_SOURCE_NAME } = state.opts;
-
-      if (path.get("callee").referencesImport(moduleSourceName, "default")) {
+      getDefineMessagesCall(path, state, () => {
         path.traverse(messagesVisitors, state);
-      }
+      });
     }
   },
   post(file) {

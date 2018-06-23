@@ -1,12 +1,13 @@
+const { name } = require("../package.json");
+const { getDefineMessagesCall } = require("./utils");
+
 module.exports = ({ types: t }) => ({
   visitor: {
-    CallExpression(path) {
-      const { moduleSourceName = DEFAULT_MODULE_SOURCE_NAME } = state.opts;
-
-      if (path.get("callee").referencesImport(moduleSourceName, "default")) {
+    CallExpression(path, state) {
+      getDefineMessagesCall(path, state, () => {
         // remove defineMessages function call to enable tree-shaking
         path.replaceWith(path.node.arguments[0]);
-      }
+      });
     }
   }
 });

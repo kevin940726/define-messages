@@ -1,31 +1,49 @@
-import { transform } from "@babel/core";
-import { name } from "../../package.json";
-import extractPlugin from "../extract";
+const { transform } = require("@babel/core");
+const { name } = require("../../package.json");
+const extractPlugin = require("../extract");
 
-test("extract to some place", () => {
+test("extract simple object message descriptor", () => {
+  const message = {
+    id: "message id",
+    defaultMessage: "message default message"
+  };
+
+  console.log(JSON.stringify(message));
+
   const code = `
-    import defineMessages from 'define-messages/babel/extract';
+    import defineMessages from 'define-messages';
 
-    defineMessages({
-      id: 'some id',
-      defaultMessage: 'some defaultMessage',
-    });
-
-    defineMessages({
-      title: {
-        id: 'title id',
-        defaultMessage: 'title defaultMessage',
-      },
-      description: {
-        id: 'description id',
-        defaultMessage: 'description defaultMessage',
-      },
-    });
+    defineMessages(${JSON.stringify(message)});
   `;
 
   const transformed = transform(code, {
     plugins: [extractPlugin]
   });
 
-  expect(transformed.metadata[name].messages).toMatchSnapshot();
+  expect(transformed.metadata[name].messages).toEqual([message]);
+});
+
+test("extract several object message descriptors", () => {
+  const messages = {
+    title: {
+      id: "title id",
+      defaultMessage: "title default message"
+    },
+    description: {
+      id: "description id",
+      defaultMessage: "description default message"
+    }
+  };
+
+  const code = `
+    import defineMessages from 'define-messages';
+
+    defineMessages(${JSON.stringify(messages)});
+  `;
+
+  const transformed = transform(code, {
+    plugins: [extractPlugin]
+  });
+
+  expect(transformed.metadata[name].messages).toEqual([messages]);
 });
