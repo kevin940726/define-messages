@@ -12,7 +12,10 @@ const messagesVisitors = {
 
     const { value: message } = path.evaluate();
 
-    if (message && ["id", "defaultMessage"].includes(Object.keys(message))) {
+    if (
+      message &&
+      ["id", "defaultMessage"].every(key => Object.keys(message).includes(key))
+    ) {
       file.get(MESSAGES_KEY).set(message.id, message);
     }
   }

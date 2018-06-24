@@ -8,8 +8,6 @@ test("extract simple object message descriptor", () => {
     defaultMessage: "message default message"
   };
 
-  console.log(JSON.stringify(message));
-
   const code = `
     import defineMessages from 'define-messages';
 
@@ -45,5 +43,5 @@ test("extract several object message descriptors", () => {
     plugins: [extractPlugin]
   });
 
-  expect(transformed.metadata[name].messages).toEqual([messages]);
+  expect(transformed.metadata[name].messages).toEqual(Object.values(messages));
 });
