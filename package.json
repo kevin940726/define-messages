@@ -16,6 +16,14 @@
       "git add"
     ]
   },
+  "keywords": [
+    "react-intl",
+    "babel-plugin",
+    "intl",
+    "i18n",
+    "define-messages",
+    "codemod"
+  ],
   "devDependencies": {
     "@babel/core": "~7.0.0-beta.51",
     "eslint-plugin-prettier": "~2.6.1",
