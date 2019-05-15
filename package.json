@@ -3,7 +3,7 @@
   "version": "0.2.2",
   "description": "💬  define intl messages done right",
   "main": "index.js",
-  "repository": "git://github.com/kevin940276/define-messages",
+  "repository": "git://github.com/kevin940726/define-messages",
   "author": "Kai Hao",
   "license": "MIT",
   "scripts": {
